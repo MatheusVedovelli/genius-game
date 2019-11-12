@@ -1,6 +1,8 @@
 let colors = [["rgb(0, 128, 0)", "rgb(128, 0, 0)", "rgb(128, 128, 0)", "rgb(0, 0, 128)"], // cores de cada botão apagado
               ["rgb(0, 255, 0)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 255)"]]; // cores de cada botão aceso
 
+              var music=[];
+
 function sleep(ms) { // pausa a execução da função atual (precisa ser async) pelo tempo estipulado em milisegundos
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -21,7 +23,7 @@ async function flashButton(num) // função que vai gerenciar o botão pressiona
     currentButton = num;
     setLight(num, 1);
 
-    // inserir som do botão aqui
+    music[num-1].play();// inserir som do botão aqui
 
     await sleep(1000);
     setLight(num, 0);
@@ -29,6 +31,19 @@ async function flashButton(num) // função que vai gerenciar o botão pressiona
 }
 
 $(document).ready(function(){
+    
+    music[0]=new Audio();
+    music[0].src="audio/simonSound1.mp3"
+    
+    music[1]=new Audio();
+    music[1].src="audio/simonSound2.mp3"
+
+    music[2]=new Audio();
+    music[2].src="audio/simonSound3.mp3"
+
+    music[3]=new Audio();
+    music[3].src="audio/simonSound4.mp3"
+
     for(let i = 1; i <= 4; i++)
     {
         setLight(i, 0);
