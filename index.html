@@ -9,10 +9,66 @@
     <title>Genius</title>
 </head>
 <body>
-    <h1 class="text-center cab">GENIUS</h1>
-        <input type="button" id="btn1" value="1">
-        <input type="button" id="btn2" value="2">
-        <input type="button" id="btn3" value="3">
-        <input type="button" id="btn4" value="4">   
+    <div class="container-fluid">
+        <div class="row" id="title">
+            <h1 class="col-md-12 text-center">GENIUS</h1>
+        </div>
+
+        <div class="row" id="startScreen">
+            <div class="col-md-12 text-center">
+                <select name="mode" id="mode">
+                    <option value="solo">Siga a sequência</option>
+                    <option value="solo">Crie a sua sequência</option>
+                </select>
+                <select name="level" id="level">
+                    <option value="0">Nivel 1 - até 8 sequências</option>
+                    <option value="1">Nivel 2 - até 14 sequências</option>
+                    <option value="2">Nivel 3 - até 20 sequências</option>
+                    <option value="3">Nivel 4 - até 31 sequências</option>
+                </select>
+                <br>
+                <input type="text" name="playerName" id="playerName" value="foo" placeholder="Nome do jogador">
+                <br>
+                <input type="button" id="iniciar" value="INICIAR">
+            </div>
+        </div>
+
+        <div class="row" id="gameScreen">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="button" id="btn1" value="1">
+                        <input type="button" id="btn2" value="2">
+                        <input type="button" id="btn3" value="3">
+                        <input type="button" id="btn4" value="4">   
+                        <p id="ptempo">Tempo Restante: 0</p>
+                        <p id="pscore">Atual: 0</p>
+                        <p id="ptotal">Objetivo: 0</p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="rankingScreen">
+            <div class="col-md-12">
+                <div class="row">
+                        <div class="col-md-6 text-center">
+                                <h1>Pontos: 55</h1>
+                                
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <h1>Ranking:</h1>
+                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <input type="button" id="reset" value="TENTAR NOVAMENTE">
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>
