@@ -2,25 +2,65 @@ let colors = [["rgb(0, 128, 0)", "rgb(128, 0, 0)", "rgb(128, 128, 0)", "rgb(0, 0
               ["rgb(0, 255, 0)", "rgb(255, 0, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 255)"]]; // cores de cada botão aceso
 
 let music=[]; // vetor dos sons
-let gameState = 0; // estado atual do jogo (transiçao entre as telas)
-let clones = [];
-let levels = [8, 14, 20, 31];
-let sequence = [];
-let currentStep = 0;
-let playerStep = 0;
-let turn = "game";
-let lastPlayerStep = 0;
-let currentButton = 0;
+let nextGameState = 0; // estado atual do jogo (transiçao entre as telas) { 1 = inicio | 2 = game | 3 = ranking }
+let clones = []; // vetor pra guardar o backup das divs
+let levels = [8, 14, 20, 31]; // limite de jogadas pra cada dificuldade
+let sequence = []; // vetor da sequencia
+let currentStep = 0; // sequencia que o game está tocando
+let playerStep = 0; // sequencia que o player está tocando
+let turn = "game"; // de quem é o turno { "game" | "player" }
+let lastPlayerStep = 0; // ultima vez que o player fez alguma ação
+let currentButton = 0; // botão atual
 
-let config;
+let config = { // configurações padrão do jogo
+    mode : "solo",
+    level : 1,
+    name : ""
+};
 
-function sleep(ms) { // pausa a execução da função atual (precisa ser async) pelo tempo estipulado em milisegundos
+function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function getCurrentTime()
 {
     return new Date().getTime();
+}
+
+function loadAudio()
+{
+    music[0] = new Audio();
+    music[0].src = "audio/simonSound1.mp3";
+    
+    music[1] = new Audio();
+    music[1].src = "audio/simonSound2.mp3";
+
+    music[2] = new Audio();
+    music[2].src = "audio/simonSound3.mp3";
+
+    music[3] = new Audio();
+    music[3].src = "audio/simonSound4.mp3";
+
+    music[4] = new Audio();
+    music[4].src = "audio/error.wav";
+}
+
+function removeDiv(start, game, ranking)
+{
+    if(start)
+    {
+        $("#startScreen").remove();
+    }
+
+    if(game)
+    {
+        $("#gameScreen").remove();
+    }
+
+    if(ranking)
+    {
+        $("#rankingScreen").remove();
+    }
 }
 
 function updateClones()
@@ -41,6 +81,22 @@ function updateClones()
     }
 }
 
+function setConfig(mode, level, name)
+{
+    config.mode = mode;
+    config.level = level;
+    config.name = name;
+}
+
+function addSequence(mode)
+{
+    if(mode == "solo")
+    {
+        sequence.push((Math.floor(Math.random() * 10) % 4) + 1);
+        currentStep = 0;
+    }
+}
+
 function initSequence(mode)
 {
     sequence = [];
@@ -51,21 +107,26 @@ function initSequence(mode)
     }
 }
 
-function addSequence(mode)
+function updateText()
 {
-    if(mode == "solo")
-    {
-        sequence.push((Math.floor(Math.random() * 10) % 4) + 1);
-        currentStep = 0;
+    $("#pscore").text("Atual: " + sequence.length);
+    $("#ptotal").text("Objetivo: " + levels[config.level]);
 
-        $("#pscore").text("Atual: " + sequence.length);
-        $("#ptotal").text("Objetivo: " + levels[config.level]);
+    if(lastPlayerStep)
+    {
+        let timeleft = Math.floor(((lastPlayerStep + 5000) - getCurrentTime()) / 1000) + 1;
+
+        $("#ptempo").text("Tempo Restante: " + timeleft);
+    }
+    else
+    {
+        $("#ptempo").text("Tempo Restante: ...");
     }
 }
 
-function setLight(btnID, state) // seta a luz do botão (0 = apagado | 1 = aceso)
+function setLight(btnID, state)
 {
-    if((btnID < 1 || btnID > 4) || (state < 0 || state > 1)) return; // só pra garantir que os valores são válidos
+    if((btnID < 1 || btnID > 4) || (state < 0 || state > 1)) return;
 
     $("#btn" + btnID).css("color", colors[state][btnID-1]);
     $("#btn" + btnID).css("background-color", colors[state][btnID-1]);
@@ -87,19 +148,21 @@ function resetGame()
     playerStep = 0;
     turn = "game";
     lastPlayerStep = 0;
-    gameState = 1;
+    nextGameState = 1;
     currentButton = 0;
 }
 
 async function playError()
 {
+    turn = "game";
     music[4].play();
     await sleep(1000);
+    nextGameState = 3;
 }
 
-async function flashButton(btnID, origin) // função que vai gerenciar o botão pressionado pelo usuário (piscar, emitir som e verificar ordem)
+async function flashButton(btnID, origin)
 {
-    if(currentButton != 0 || origin != turn) return; // permitir apertar o proximo botão apenas quando o ultimo tiver terminado
+    if(currentButton != 0 || origin != turn) return;
 
     currentButton = btnID;
     setLight(btnID, 1);
@@ -123,33 +186,30 @@ async function flashButton(btnID, origin) // função que vai gerenciar o botão
         {
             if(sequence[playerStep] != btnID)
             {
-                turn = "game";
                 await playError();
-                gameState = 3;
                 return;
             }
 
             playerStep++;
             lastPlayerStep = getCurrentTime();
+        }
 
-            if(playerStep == sequence.length)
+        if(playerStep == sequence.length)
+        {
+            if(sequence.length >= levels[config.level])
             {
-                if(sequence.length < levels[config.level])
-                {
-                    turn = "game";
-                    await sleep(1000);
-                    playerStep = 0;
-                    lastPlayerStep = 0;
-                    addSequence(config.mode);
-                }
-                else
-                {
-                    turn = "game";
-                    alert("Parabéns você venceu!!");
-                    await sleep(2000);
-                    gameState = 3;
-                    return;
-                }
+                turn = "game";
+                alert("Parabéns você venceu!!");
+                await sleep(2000);
+                nextGameState = 3;
+            }
+            else
+            {
+                turn = "game";
+                await sleep(1000);
+                playerStep = 0;
+                lastPlayerStep = 0;
+                addSequence(config.mode);
             }
         }
     }
@@ -159,73 +219,71 @@ async function flashButton(btnID, origin) // função que vai gerenciar o botão
     await sleep(200);
 }
 
-let prevGameState = -1;
+let currentGameState = 0;
 function setGameState(state)
 {
     switch(state)
     {
-        case 1: // start
+        case 1:
             updateClones();
-            $("#gameScreen").remove();
-            $("#rankingScreen").remove();
+            removeDiv(false, true, true);
             clones["start"].appendTo(".container-fluid");
             break;
-        case 2: // play
+        case 2:
             updateClones();
-            $("#startScreen").remove();
-            $("#rankingScreen").remove();
+            removeDiv(true, false, true);
             clones["game"].appendTo(".container-fluid");
             updateButtonSize();
             initSequence(config.mode);
             break;
-        case 3: // score e ranking
+        case 3:
             updateClones();
-            $("#startScreen").remove();
-            $("#gameScreen").remove();
+            removeDiv(true, true, false);
             clones["ranking"].appendTo(".container-fluid");
             break;
     }
 
-    prevGameState = state;
-    return state;
+    currentGameState = state;
 }
 
 async function mainGame()
 {
-    if(gameState != prevGameState)
+    if(nextGameState != currentGameState)
     {
-        setGameState(gameState);
+        setGameState(nextGameState);
         await sleep(500);
     }
     else
     {
-        if(gameState == 2)
+        if(currentGameState == 2)
         {
             updateButtonSize();
-    
-            if(currentStep != sequence.length)
-            {
-                await flashButton(sequence[currentStep], "game");
-            }
+            updateText();
 
-            if(turn == "player")
+            switch(turn)
             {
-                if(lastPlayerStep == 0)
-                {
-                    lastPlayerStep = getCurrentTime();
-                }
-                else
-                {
-                    let timeleft = Math.floor(((lastPlayerStep + 5000) - getCurrentTime()) / 1000) + 1;
-                    $("#ptempo").text("Tempo Restante: " + timeleft);
-                    
-                    if(timeleft == 0)
+                case "player":
+                    if(lastPlayerStep == 0)
                     {
-                        turn = "game";
-                        await playError();
-                        gameState = 3;
+                        lastPlayerStep = getCurrentTime();
                     }
-                }
+                    else
+                    {
+                        let timeleft = Math.floor(((lastPlayerStep + 5000) - getCurrentTime()) / 1000) + 1;
+                        if(timeleft <= 0)
+                        {
+                            turn = "game";
+                            await playError();
+                        }
+                    }
+                    break;
+
+                case "game":
+                    if(currentStep != sequence.length)
+                    {
+                        await flashButton(sequence[currentStep], "game");
+                    }
+                    break;
             }
         }
     }
@@ -233,37 +291,23 @@ async function mainGame()
     requestAnimationFrame(mainGame);
 }
 
-$(document).ready(function(){
-    music[0] = new Audio();
-    music[0].src = "audio/simonSound1.mp3"
-    
-    music[1] = new Audio();
-    music[1].src = "audio/simonSound2.mp3"
+$(document).ready(function(){    
+    loadAudio();
 
-    music[2] = new Audio();
-    music[2].src = "audio/simonSound3.mp3"
-
-    music[3] = new Audio();
-    music[3].src = "audio/simonSound4.mp3"
-
-    music[4] = new Audio();
-    music[4].src = "audio/error.wav"
-
-    
     $("#iniciar").click(function(){
-        config = {
-            mode : $("#mode option:selected").val(),
-            level : Number($("#level option:selected").val()),
-            name : $("#playerName").val()
-        };
+        let mode = $("#mode option:selected").val();
+        let level = Number($("#level option:selected").val());
+        let name = $("#playerName").val();
 
-        if(config.name == "")
+        if(name == "")
         {
             alert("Preencha o campo nome.");
             return;
         }
 
-        gameState = 2;
+        setConfig(mode, level, name);
+
+        nextGameState = 2;
     });
 
     for(let i = 1; i <= 4; i++)
@@ -280,11 +324,9 @@ $(document).ready(function(){
     });
 
     updateClones();
-    $("#startScreen").remove();
-    $("#gameScreen").remove();
-    $("#rankingScreen").remove();
+    removeDiv(true, true, true);
 
-    gameState = 1;
+    nextGameState = 1;
 
     requestAnimationFrame(mainGame);
 })
