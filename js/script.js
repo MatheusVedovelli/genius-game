@@ -15,7 +15,8 @@ let currentButton = 0; // botão atual
 let config = { // configurações padrão do jogo
     mode : "solo",
     level : 1,
-    name : ""
+    name : "",
+    points : 0
 };
 
 function sleep(ms) {
@@ -86,12 +87,14 @@ function setConfig(mode, level, name)
     config.mode = mode;
     config.level = level;
     config.name = name;
+    config.points = 0;
 }
 
 function addSequence(mode)
 {
     if(mode == "solo")
     {
+        config.points = sequence.length;
         sequence.push((Math.floor(Math.random() * 10) % 4) + 1);
         currentStep = 0;
     }
