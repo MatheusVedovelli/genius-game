@@ -90,22 +90,30 @@ function setConfig(mode, level, name)
     config.points = 0;
 }
 
-function addSequence(mode)
+function addSequence(btnID)
 {
-    if(mode == "siga")
+    config.points = sequence.length;
+
+    if(config.mode == "siga")
     {
-        config.points = sequence.length;
         sequence.push((Math.floor(Math.random() * 10) % 4) + 1);
-        currentStep = 0;
     }
+    else if(config.mode == "crie")
+    {
+        if(btnID)
+            sequence.push(btnID);
+        else
+            sequence.push((Math.floor(Math.random() * 10) % 4) + 1);
+    }
+    currentStep = 0;
 }
 
 function initSequence(mode)
 {
     sequence = [];
-    if(mode == "siga")
+    if(mode == "siga" || mode == "crie")
     {
-        addSequence(mode);
+        addSequence();
         turn = "game";
     }
 }
@@ -189,30 +197,47 @@ async function flashButton(btnID, origin)
         {
             if(sequence[playerStep] != btnID)
             {
+                console.log("errou", btnID);
                 await playError();
                 return;
             }
 
             playerStep++;
             lastPlayerStep = getCurrentTime();
+            console.log("acertou", btnID);
+            console.log(sequence);
+        }
+        else
+        {
+            if(config.mode == "crie")
+            {
+                console.log("adicionou", btnID);
+                addSequence(btnID);
+                console.log(sequence);
+                playerStep = 0;
+                lastPlayerStep = getCurrentTime();
+            }
         }
 
         if(playerStep == sequence.length)
         {
-            if(sequence.length >= levels[config.level])
+            if(config.mode == "siga")
             {
-                turn = "game";
-                alert("Parabéns você venceu!!");
-                await sleep(2000);
-                nextGameState = 3;
-            }
-            else
-            {
-                turn = "game";
-                await sleep(1000);
-                playerStep = 0;
-                lastPlayerStep = 0;
-                addSequence(config.mode);
+                if(sequence.length >= levels[config.level])
+                {
+                    turn = "game";
+                    alert("Parabéns você venceu!!");
+                    await sleep(2000);
+                    nextGameState = 3;
+                }
+                else
+                {
+                    turn = "game";
+                    await sleep(1000);
+                    playerStep = 0;
+                    lastPlayerStep = 0;
+                    addSequence(config.mode);
+                }
             }
         }
     }
