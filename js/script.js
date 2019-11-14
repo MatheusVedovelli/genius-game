@@ -13,7 +13,7 @@ let lastPlayerStep = 0; // ultima vez que o player fez alguma ação
 let currentButton = 0; // botão atual
 
 let config = { // configurações padrão do jogo
-    mode : "solo",
+    mode : "siga",
     level : 1,
     name : "",
     points : 0
@@ -92,7 +92,7 @@ function setConfig(mode, level, name)
 
 function addSequence(mode)
 {
-    if(mode == "solo")
+    if(mode == "siga")
     {
         config.points = sequence.length;
         sequence.push((Math.floor(Math.random() * 10) % 4) + 1);
@@ -103,7 +103,7 @@ function addSequence(mode)
 function initSequence(mode)
 {
     sequence = [];
-    if(mode == "solo")
+    if(mode == "siga")
     {
         addSequence(mode);
         turn = "game";
