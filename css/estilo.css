@@ -36,3 +36,9 @@
     border-bottom-right-radius: 900px;
     outline:none;
 }
+
+
+#rsNome,#rsPontos,#rsdivRanking{
+    font-size: 32px;
+    font-style: unset;
+}

@@ -163,10 +163,49 @@ function resetGame()
     currentButton = 0;
 }
 
+let ranking=[];
+function pontos(modo,score,nome)
+{
+    let inform={
+        modo: config.mode,
+        score: config.points,
+        nome: config.name
+    };          
+    ranking.push(inform)
+
+    ranking.sort(function(a,b) // organizando ranking por melhor pontuação
+    {
+        if(a.score<b.score)
+            {
+                return 1;
+            }
+        if(a.score>b.score)
+            {
+                return -1;
+            }
+        return 0;
+    });
+
+    $('#rsNome').text('NOME:  '+config.name);
+    
+    $('#rsPontos').text('PONTOS: '+config.points);
+    
+    $('#rsRanking').text('RANKING: '+ranking.inform); 
+        
+    $('#rsdivRanking').text("");    
+    for (let i=0; i<(ranking.length<10?ranking.length:10);i++)
+        {
+            $('#rsdivRanking').text($('#rsdivRanking').text()+"\n"+"PLAYER: "+ranking[i].nome+"\n"+" MODO: "+ranking[i].modo+' |  SCORE: '+ranking[i].score+"\n");        
+        }        
+    $('#rsdivRanking').html($('#rsdivRanking').html().replace(/\n/g,"<br>"));
+}
+
+
 async function playError()
 {
     turn = "game";
     music[4].play();
+         
     await sleep(1000);
     nextGameState = 3;
 }
@@ -227,6 +266,7 @@ async function flashButton(btnID, origin)
                 {
                     turn = "game";
                     alert("Parabéns você venceu!!");
+                    //pontos(config.mode,config.points, config.name);
                     await sleep(2000);
                     nextGameState = 3;
                 }
@@ -268,6 +308,7 @@ function setGameState(state)
             updateClones();
             removeDiv(true, true, false);
             clones["ranking"].appendTo(".container-fluid");
+            pontos(config.mode,config.points, config.name);            
             break;
     }
 
