@@ -10,29 +10,34 @@
 </head>
 <body>
     <div class="container-fluid">
-        <div class="row" id="title">
-            <h1 class="col-md-12 text-center">GENIUS</h1>
-        </div>
+        <div class="">
+            <div class="">
+                <div class="row" id="title">
+                    <h1 class="col-md-12 text-center">GENIUS</h1>
+                </div>
 
-        <div class="row" id="startScreen">
-            <div class="col-md-12 text-center">
-                <select name="mode" id="mode">
-                    <option value="siga">Siga a sequência</option>
-                    <option value="crie">Crie a sua sequência</option>
-                </select>
-                <select name="level" id="level">
-                    <option value="0">Nivel 1 - até 8 sequências</option>
-                    <option value="1">Nivel 2 - até 14 sequências</option>
-                    <option value="2">Nivel 3 - até 20 sequências</option>
-                    <option value="3">Nivel 4 - até 31 sequências</option>
-                </select>
-                <br>
-                <input class="mt-2 mb-2" type="text" name="playerName" id="playerName" placeholder="Nome do jogador">
-                <br>
-                <input type="button" id="iniciar" value="Iniciar">
-                <input type="button" id="goranking" value="Ir para o Ranking">
+                <div class="row" id="startScreen">
+                    <div class="col-md-12 text-center">
+                        <select class="" name="mode" id="mode">
+                            <option value="siga">Siga a sequência</option>
+                            <option value="crie">Crie a sua sequência</option>
+                        </select>
+                        <select name="level" id="level">
+                            <option value="0">Nivel 1 - até 8 sequências</option>
+                            <option value="1">Nivel 2 - até 14 sequências</option>
+                            <option value="2">Nivel 3 - até 20 sequências</option>
+                            <option value="3">Nivel 4 - até 31 sequências</option>
+                        </select>
+                        <br>
+                        <input class="mt-2 mb-2 " type="text" name="playerName" id="playerName" placeholder="Nome do jogador">
+                        <br>
+                        <input class="btn-dark" type="button" id="iniciar" value="Iniciar">
+                        <input class="btn-dark" type="button" id="goranking" value="Ir para o Ranking">
+                    </div>
+                </div>
             </div>
         </div>
+        
 
         <div class="row" id="gameScreen">
             <div class="col-md-12">
@@ -54,21 +59,21 @@
        <div class="row" id="rankingScreen">
             <div class="col-md-12">
                 <div class="row">                        
-                    <div class="col-md-4 text-center">
+                    <div class="col-md-6 text-center">
                         <p id="rsNome">Nome: 0</p>
                     </div>   
                 
-                    <div class="col-md-4 text-center">
+                    <div class="col-md-6 text-center">
                         <p id="rsPontos">Pontos: 0</p>
                     </div>
 
-                    <div class="col-md-4 text-center" id="rsdivRanking">
+                    <div class="col-md-12 text-center" id="rsdivRanking">
                     </div>
                         
                 </div>
                 <div class="row mt-5">
                     <div class="col-md-12 text-center">
-                        <input type="button" id="reset" value="Voltar ao inicio">
+                        <input class="btn-dark" type="button" id="reset" value="Voltar ao inicio">
                     </div>
                 </div>
             </div>
