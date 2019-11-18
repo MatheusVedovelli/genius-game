@@ -169,6 +169,10 @@ function resetGame()
 let ranking=[];
 function pontos(modo,score,nome)
 {
+    ranking = JSON.parse(localStorage.getItem("genius-game-ranking"));
+    if(ranking === null)
+        ranking = [];
+        
     if(nome != "")
     {
         let inform={
@@ -191,6 +195,8 @@ function pontos(modo,score,nome)
         }
         return 0;
     });
+
+    localStorage.setItem("genius-game-ranking", JSON.stringify(ranking));
 
     $('#rsNome').text('NOME:  '+config.name);
     
