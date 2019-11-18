@@ -38,7 +38,11 @@
 }
 
 
-#rsNome,#rsPontos,#rsdivRanking{
+#rsNome,#rsPontos,#rsRaking{
     font-size: 32px;
     font-style: unset;
+}
+
+#rsdivRanking{
+    font-size:18px;
 }

@@ -27,9 +27,10 @@
                     <option value="3">Nivel 4 - até 31 sequências</option>
                 </select>
                 <br>
-                <input type="text" name="playerName" id="playerName" placeholder="Nome do jogador">
+                <input class="mt-2 mb-2" type="text" name="playerName" id="playerName" placeholder="Nome do jogador">
                 <br>
-                <input type="button" id="iniciar" value="INICIAR">
+                <input type="button" id="iniciar" value="Iniciar">
+                <input type="button" id="goranking" value="Ir para o Ranking">
             </div>
         </div>
 
@@ -53,23 +54,23 @@
        <div class="row" id="rankingScreen">
             <div class="col-md-12">
                 <div class="row">                        
-                        <div class="col-md-4 text-center">
-                                <p id="rsNome">Nome: 0</p>
-                               </div>   
-                    
                     <div class="col-md-4 text-center">
-                         <p id="rsPontos">Pontos: 0</p>
-                        </div>
-                        <div class="col-md-4 text-center" id="rsdivRanking">
-                          <p id="rsRanking">Ranking: 0</p>
-                        </div>
+                        <p id="rsNome">Nome: 0</p>
+                    </div>   
+                
+                    <div class="col-md-4 text-center">
+                        <p id="rsPontos">Pontos: 0</p>
+                    </div>
+
+                    <div class="col-md-4 text-center" id="rsdivRanking">
+                    </div>
                         
+                </div>
+                <div class="row mt-5">
+                    <div class="col-md-12 text-center">
+                        <input type="button" id="reset" value="Voltar ao inicio">
                     </div>
-                    <div class="row mt-5">
-                        <div class="col-md-12 text-center">
-                            <input type="button" id="reset" value="TENTAR NOVAMENTE">
-                        </div>
-                    </div>
+                </div>
             </div>
         </div>
     </div>

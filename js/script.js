@@ -161,45 +161,47 @@ function resetGame()
     lastPlayerStep = 0;
     nextGameState = 1;
     currentButton = 0;
+    config.name = "";
+    config.points = 0;
+    config.mode = "siga";
 }
 
 let ranking=[];
 function pontos(modo,score,nome)
 {
-    let inform={
-        modo: config.mode,
-        score: config.points,
-        nome: config.name
-    };          
-    ranking.push(inform)
+    if(nome != "")
+    {
+        let inform={
+            modo: modo,
+            score: score,
+            nome: nome
+        };          
+        ranking.push(inform)
+    }
 
     ranking.sort(function(a,b) // organizando ranking por melhor pontuação
     {
         if(a.score<b.score)
-            {
-                return 1;
-            }
+        {
+            return 1;
+        }
         if(a.score>b.score)
-            {
-                return -1;
-            }
+        {
+            return -1;
+        }
         return 0;
     });
 
     $('#rsNome').text('NOME:  '+config.name);
     
     $('#rsPontos').text('PONTOS: '+config.points);
-    
-    $('#rsRanking').text('RANKING: '+ranking.inform); 
         
-    $('#rsdivRanking').text("");    
+    $('#rsdivRanking').html('<p id="rsRanking" style="font-size:32px;">Ranking:</p>');    
     for (let i=0; i<(ranking.length<10?ranking.length:10);i++)
-        {
-            $('#rsdivRanking').text($('#rsdivRanking').text()+"\n"+"PLAYER: "+ranking[i].nome+"\n"+" MODO: "+ranking[i].modo+' |  SCORE: '+ranking[i].score+"\n");        
-        }        
-    $('#rsdivRanking').html($('#rsdivRanking').html().replace(/\n/g,"<br>"));
+    {
+        $('#rsdivRanking').html($('#rsdivRanking').html() + "<br>" + "Nome: " + ranking[i].nome + " | Modo: " + ranking[i].modo + ' | Pontos: ' + ranking[i].score);        
+    }
 }
-
 
 async function playError()
 {
@@ -236,23 +238,18 @@ async function flashButton(btnID, origin)
         {
             if(sequence[playerStep] != btnID)
             {
-                console.log("errou", btnID);
                 await playError();
                 return;
             }
 
             playerStep++;
             lastPlayerStep = getCurrentTime();
-            console.log("acertou", btnID);
-            console.log(sequence);
         }
         else
         {
             if(config.mode == "crie")
             {
-                console.log("adicionou", btnID);
                 addSequence(btnID);
-                console.log(sequence);
                 playerStep = 0;
                 lastPlayerStep = getCurrentTime();
             }
@@ -388,9 +385,9 @@ $(document).ready(function(){
         });
     }
 
-    $("#reset").click(function(){
-        resetGame();
-    });
+    $("#reset").click(() => resetGame());
+
+    $("#goranking").click(() => nextGameState = 3)
 
     updateClones();
     removeDiv(true, true, true);
